@@ -1,14 +1,22 @@
 #!/usr/bin/python3
 """
-Python script that takes 2 arguments in order to solve the given challenge
-"""
-import requests
-from sys import argv
+Python script that takes 2 arguments in order to solve this challenge.
 
-if __name__ == '__main__':
+Usage: ./100-github_commits.py <repository name> <repository owner>
+"""
+from sys import argv
+import requests
+
+
+if __name__ == "__main__":
     url = "https://api.github.com/repos/{}/{}/commits".format(argv[2], argv[1])
-    r = requests.get(url)
-    commits = r.json()
-    for commit in commits[:10]:
-        print(commit.get('sha'), end=': ')
-        print(commit.get('commit').get('author').get('name'))
+    req = requests.get(url)
+    commits = req.json()
+
+    try:
+        for index in range(10):
+            print("{}: {}".format(
+                commits[index].get("sha"),
+                commits[index].get("commit").get("author").get("name")))
+    except IndexError:
+        pass
