@@ -1,23 +1,21 @@
 #!/usr/bin/node
+
 const request = require('request');
-const url = process.argv[2];
-const myDict = {};
 
-request(url, function (err, data, body) {
-  if (err) {
-    console.log(err);
-  } else {
-    const response = JSON.parse(body);
+const apiUrl = process.argv[2];
 
-    for (let i = 0; i < response.length; i++) {
-      if (response[i].completed === true) {
-        if (myDict[response[i].userId] === undefined) {
-          myDict[response[i].userId] = 1;
-        } else {
-          myDict[response[i].userId] += 1;
-        }
-      }
-    }
+request(apiUrl, (error, response, body) => {
+  if (error) {
+    console.error(error);
+    return;
   }
-  console.log(myDict);
+  const tasks = JSON.parse(body);
+  const completedTasks = tasks.reduce((acc, task) => {
+    if (task.completed) {
+      acc[task.userId] = (acc[task.userId] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  console.log(completedTasks);
 });
